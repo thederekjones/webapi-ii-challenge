@@ -70,4 +70,32 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.post('/:id/comments', async (req, res) => {
+  const newMessage = { ...req.body, post_id: req.params.id };
+
+  try {
+    const comment = await Posts.insertComment(newMessage);
+
+    if (comment) {
+      if (newMessage.text) {
+        res.status(201).json(comment);
+      } else {
+        res
+          .status(400)
+          .json({ errorMessage: 'Please provide text for the comment.' });
+      }
+    } else {
+      res
+        .status(404)
+        .json({ message: 'The post with the specified ID does not exist.' });
+    }
+  } catch (err) {
+    res
+      .status(500)
+      .json({
+        error: 'There was an error while saving the comment to the database'
+      });
+  }
+});
+
 module.exports = router;
