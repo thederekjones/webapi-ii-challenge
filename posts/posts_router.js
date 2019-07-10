@@ -20,7 +20,7 @@ router.get('/:id', async (req, res) => {
   try {
     const postsById = await Posts.findById(req.params.id);
 
-    if (postsById) {
+    if (postsById.length) {
       res.status(200).json(postsById);
     } else {
       res
@@ -38,7 +38,7 @@ router.get('/:id/comments', async (req, res) => {
   try {
     const comments = await Posts.findPostComments(req.params.id);
 
-    if (comments) {
+    if (comments.length) {
       res.status(200).json(comments);
     } else {
       res
@@ -90,11 +90,9 @@ router.post('/:id/comments', async (req, res) => {
         .json({ message: 'The post with the specified ID does not exist.' });
     }
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        error: 'There was an error while saving the comment to the database'
-      });
+    res.status(500).json({
+      error: 'There was an error while saving the comment to the database'
+    });
   }
 });
 
